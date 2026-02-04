@@ -38,7 +38,8 @@ export function AnalyzeButton({
         throw new Error('분석 요청 실패');
       }
 
-      const insight: CreatorInsight = await response.json();
+      const result = await response.json();
+      const insight: CreatorInsight = result.data;
       setState('success');
       onComplete(insight);
 

@@ -567,7 +567,7 @@ describe('AnalyzeButton', () => {
     (global.fetch as any).mockImplementation(() =>
       new Promise((resolve) => setTimeout(() => resolve({
         ok: true,
-        json: async () => mockInsight,
+        json: async () => ({ success: true, data: mockInsight }),
       }), 100))
     );
 
@@ -589,7 +589,7 @@ describe('AnalyzeButton', () => {
   it('should call onComplete with insight data', async () => {
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
-      json: async () => mockInsight,
+      json: async () => ({ success: true, data: mockInsight }),
     });
 
     const onComplete = vi.fn();
@@ -611,7 +611,7 @@ describe('AnalyzeButton', () => {
   it('should show success state after completion', async () => {
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
-      json: async () => mockInsight,
+      json: async () => ({ success: true, data: mockInsight }),
     });
 
     render(
@@ -714,7 +714,7 @@ describe('AnalyzeButton', () => {
   it('should reset to idle state after 2 seconds on success', async () => {
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
-      json: async () => mockInsight,
+      json: async () => ({ success: true, data: mockInsight }),
     });
 
     render(
