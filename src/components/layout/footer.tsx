@@ -12,7 +12,7 @@ export function Footer() {
 
           <div className="flex items-center justify-center space-x-4 text-sm text-gray-600">
             <a
-              href="https://github.com"
+              href="https://github.com/baekenough/zvzo-creator-insight"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-zvzo-500 transition-colors inline-flex items-center space-x-1"

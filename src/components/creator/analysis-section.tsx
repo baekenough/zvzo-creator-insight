@@ -74,7 +74,7 @@ export function AnalysisSection({ creatorId, className }: AnalysisSectionProps) 
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 가격대별 판매 분포
               </h3>
-              <PriceDistribution data={insight.priceRange.distribution || []} height={350} />
+              <PriceDistribution data={insight.priceRange?.distribution || []} height={350} />
             </div>
           </div>
 
@@ -83,7 +83,7 @@ export function AnalysisSection({ creatorId, className }: AnalysisSectionProps) 
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               시즌별 판매 트렌드
             </h3>
-            <SeasonalTrend data={insight.seasonalPattern || []} height={400} />
+            <SeasonalTrend data={insight.seasonalPattern || insight.seasonalTrends || []} height={400} />
           </div>
 
           {/* Conversion Metrics */}

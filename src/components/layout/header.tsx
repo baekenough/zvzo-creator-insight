@@ -97,7 +97,7 @@ export function Header({ className }: HeaderProps) {
 
           {/* GitHub Link */}
           <a
-            href="https://github.com"
+            href="https://github.com/baekenough/zvzo-creator-insight"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-600 hover:text-zvzo-500 transition-colors"

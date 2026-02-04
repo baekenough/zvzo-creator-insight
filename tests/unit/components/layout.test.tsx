@@ -24,7 +24,7 @@ describe('Header', () => {
 
     const githubLink = screen.getByLabelText('GitHub');
     expect(githubLink).toBeInTheDocument();
-    expect(githubLink).toHaveAttribute('href', 'https://github.com');
+    expect(githubLink).toHaveAttribute('href', 'https://github.com/baekenough/zvzo-creator-insight');
   });
 
   it('should toggle mobile menu on button click', () => {
@@ -180,7 +180,7 @@ describe('Footer', () => {
     render(<Footer />);
 
     const githubLink = screen.getByText('GitHub').closest('a');
-    expect(githubLink).toHaveAttribute('href', 'https://github.com');
+    expect(githubLink).toHaveAttribute('href', 'https://github.com/baekenough/zvzo-creator-insight');
     expect(githubLink).toHaveAttribute('target', '_blank');
   });
 

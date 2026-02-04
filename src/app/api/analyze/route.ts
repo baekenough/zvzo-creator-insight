@@ -69,12 +69,26 @@ export async function POST(request: NextRequest) {
         priceRange: {
           min: Math.min(...preprocessed.priceDistribution.map((p) => parseInt(p.priceRange.split('-')[0]))),
           max: Math.max(...preprocessed.priceDistribution.map((p) => parseInt(p.priceRange.split('-')[1]))),
+          distribution: preprocessed.priceDistribution.map((p) => ({
+            range: p.priceRange,
+            count: p.salesCount,
+            revenue: p.revenue,
+          })),
         },
         seasonalPattern: preprocessed.seasonalPattern.map((s) => ({
           season: s.season,
           salesCount: s.salesCount,
           revenue: s.revenue,
         })),
+        conversionMetrics: {
+          avgConversionRate: preprocessed.summary.totalSales > 0
+            ? Number((preprocessed.summary.totalRevenue / preprocessed.summary.totalSales / 1000).toFixed(2))
+            : 0,
+          bestConversionCategory: preprocessed.categoryBreakdown[0]?.category || 'N/A',
+          followerToPurchaseRatio: creator.followers > 0
+            ? Number((preprocessed.summary.totalSales / creator.followers * 100).toFixed(4))
+            : 0,
+        },
         recommendations: [
           `${preprocessed.categoryBreakdown[0]?.category || 'N/A'} 카테고리 제품 확대 추천`,
           `${preprocessed.priceDistribution[0]?.priceRange}원 가격대 제품 집중 판매`,
