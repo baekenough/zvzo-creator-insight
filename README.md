@@ -6,13 +6,6 @@ AI 기반 크리에이터-제품 매칭 플랫폼으로, 크리에이터에게�
 
 ---
 
-## 📸 데모
-
-- **라이브 데모**: [https://doers-ten.vercel.app](https://doers-ten.vercel.app)
-- **스크린샷**: _(추가 예정)_
-
----
-
 ## ✨ 주요 기능
 
 ### 1. 크리에이터 분석
@@ -332,52 +325,3 @@ test: Add tests for match-card component
 - **React Testing Library**: 컴포넌트 테스트
 - **@vitest/coverage-v8**: 코드 커버리지 측정
 - **테스트 범위**: API routes, components, pages, libraries, data layer
-
----
-
-## 📝 라이선스
-
-MIT License
-
-Copyright (c) 2026 ZVZO
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
----
-
-## 🤝 기여하기
-
-기여는 언제나 환영합니다! 이슈를 등록하거나 Pull Request를 보내주세요.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## 📧 문의
-
-- **GitHub Issues**: [프로젝트 이슈 페이지](https://github.com/baekenough/zvzo-creator-insight/issues)
-- **Email**: contact@zvzo.com _(업데이트 예정)_
-
----
-
-**Built with ❤️ by ZVZO Team**
