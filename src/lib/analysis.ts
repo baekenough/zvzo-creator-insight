@@ -1,4 +1,4 @@
-import type { Creator, SaleRecord, CreatorInsight, Product, ProductMatch } from '@/types';
+import type { Creator, SaleRecord, CreatorInsight, Product, ProductMatch, CreatorMatch } from '@/types';
 import { callOpenAI, OpenAIError } from './openai';
 import {
   CreatorInsightResponseSchema,
@@ -6,6 +6,7 @@ import {
   type CreatorInsightResponse,
 } from './schemas';
 import { getSeasonFromMonth } from './utils';
+import { getSalesByCreator } from '@/data';
 
 // Simple in-memory cache with TTL
 interface CacheEntry<T> {
@@ -600,6 +601,231 @@ export async function matchProductsWithData(
     .filter((m): m is NonNullable<typeof m> => m !== null)
     .sort((a, b) => b.matchScore - a.matchScore)
     .slice(0, limit);
+
+  // Cache the result
+  setCache(cacheKey, matches);
+
+  return matches;
+}
+
+/**
+ * Build creator matching prompt for OpenAI
+ */
+function buildCreatorMatchingPrompt(
+  product: Product,
+  creators: Creator[],
+  limit: number
+): string {
+  const currentMonth = new Date().getMonth() + 1;
+  const currentSeason = getSeasonFromMonth(currentMonth);
+
+  return `다음 제품에 적합한 크리에이터를 매칭해주세요:
+
+## 제품 정보
+- 이름: ${product.name}
+- 카테고리: ${product.category}
+- 가격: ${product.price.toLocaleString()}원
+- 설명: ${product.description}
+- 타겟 오디언스: ${product.targetAudience.join(', ')}
+- 시즌: ${product.seasonality.join(', ')}
+- 태그: ${product.tags.join(', ')}
+
+## 현재 시즌
+${currentSeason} (${currentMonth}월)
+
+## 매칭 대상 크리에이터 목록 (${creators.length}개)
+${creators
+  .map(
+    (c, i) => `
+크리에이터 ${i + 1}:
+- ID: ${c.id}
+- 이름: ${c.name}
+- 플랫폼: ${c.platform}
+- 팔로워: ${c.followers.toLocaleString()}명
+- 참여율: ${c.engagementRate}%
+- 카테고리: ${c.categories.join(', ')}
+- 총 판매: ${c.totalSales}건
+- 총 매출: ${c.totalRevenue.toLocaleString()}원`
+  )
+  .join('\n')}
+
+위 크리에이터들을 제품과 매칭하여 다음 JSON 형식으로 반환해주세요:
+{
+  "matches": [
+    {
+      "creatorId": "크리에이터 ID",
+      "matchScore": 0-100 사이의 매칭 점수,
+      "scoreBreakdown": {
+        "categoryFit": 0-100,
+        "priceFit": 0-100,
+        "seasonFit": 0-100,
+        "audienceFit": 0-100
+      },
+      "predictedRevenue": {
+        "min": 최소 예상 매출,
+        "max": 최대 예상 매출,
+        "average": 평균 예상 매출,
+        "predictedQuantity": 예상 판매 수량,
+        "predictedCommission": 예상 수수료
+      },
+      "reasoning": "매칭 이유 (100-200자)"
+    }
+  ]
+}
+
+매칭 스코어 70점 이상인 크리에이터만 포함하고, 최대 ${limit}개까지 반환하세요.
+점수가 높은 순으로 정렬해주세요.`;
+}
+
+/**
+ * Match creators to a product using OpenAI with fallback
+ */
+export async function matchCreatorsToProduct(
+  product: Product,
+  creators: Creator[],
+  limit: number = 10
+): Promise<CreatorMatch[]> {
+  // Check cache
+  const cacheKey = getCacheKey('match-creators', `${product.id}-${limit}`);
+  const cached = getFromCache<CreatorMatch[]>(cacheKey);
+  if (cached) {
+    console.log(`[Matching] Cache hit for product ${product.id}`);
+    return cached;
+  }
+
+  let matches: CreatorMatch[] = [];
+
+  try {
+    // Try OpenAI matching
+    const systemPrompt = `당신은 ZVZO 플랫폼의 크리에이터-제품 매칭 전문가입니다.
+
+역할:
+- 제품 정보와 크리에이터의 성향을 매칭하여 최적의 크리에이터를 추천합니다
+- 카테고리, 가격대, 시즌, 타겟 오디언스 등 다각도로 적합도를 평가합니다
+- 각 크리에이터에 대한 매칭 스코어와 구체적인 이유를 제공합니다
+
+평가 기준 (총 100점):
+1. categoryFit (40점): 크리에이터의 강점 카테고리와 제품 카테고리의 일치도
+2. priceFit (30점): 크리에이터의 평균 객단가와 제품 가격의 일치도
+3. seasonFit (20점): 현재 시즌과 크리에이터 판매 패턴의 일치도
+4. audienceFit (10점): 크리에이터 오디언스와 제품 타겟의 일치도
+
+출력 형식:
+- 반드시 유효한 JSON 형식으로 응답하세요
+- 매칭 스코어 높은 순으로 정렬하세요
+- 각 크리에이터마다 구체적인 매칭 이유를 제공하세요`;
+
+    const userPrompt = buildCreatorMatchingPrompt(product, creators, limit);
+
+    const response = await callOpenAI(
+      systemPrompt,
+      userPrompt,
+      ProductMatchListSchema,
+      {
+        temperature: 0.2,
+        maxTokens: 3000,
+      }
+    );
+
+    // Map response to CreatorMatch objects
+    matches = response.matches
+      .map((match) => {
+        const creator = creators.find((c) => c.id === match.productId);
+        if (!creator) {
+          console.warn(`Creator not found: ${match.productId}`);
+          return null;
+        }
+
+        return {
+          creator,
+          matchScore: match.matchScore,
+          matchBreakdown: match.scoreBreakdown,
+          predictedRevenue: {
+            minimum: match.predictedRevenue.min,
+            expected: match.predictedRevenue.average,
+            maximum: match.predictedRevenue.max,
+            predictedQuantity: match.predictedRevenue.predictedQuantity || 0,
+            predictedCommission: match.predictedRevenue.predictedCommission || 0,
+            basis: 'AI analysis based on product characteristics',
+          },
+          reasoning: match.reasoning,
+          confidence: match.matchScore / 100,
+        };
+      })
+      .filter((m): m is NonNullable<typeof m> => m !== null)
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, limit);
+  } catch (error: any) {
+    console.warn('[matchCreatorsToProduct] OpenAI failed, using fallback:', error.message);
+
+    // Fallback: Score creators based on actual data
+    const currentMonth = new Date().getMonth() + 1;
+    const currentSeason = getSeasonFromMonth(currentMonth);
+
+    matches = creators
+      .map((creator) => {
+        const sales = getSalesByCreator(creator.id);
+
+        // Skip creators with too few sales
+        if (sales.length < 3) return null;
+
+        const preprocessed = preprocessCreatorData(creator, sales);
+
+        // Calculate categoryFit (0-100)
+        const topCategory = preprocessed.categoryBreakdown[0]?.category;
+        const hasCategory = creator.categories.includes(product.category);
+        const isTopCategory = topCategory === product.category;
+        const categoryFit = isTopCategory ? 95 : hasCategory ? 80 : 45;
+
+        // Calculate priceFit (0-100)
+        const avgOrderValue = preprocessed.summary.averageOrderValue;
+        const priceDiff = Math.abs(avgOrderValue - product.price) / product.price;
+        const priceFit = Math.max(0, Math.round(100 - priceDiff * 100));
+
+        // Calculate seasonFit (0-100)
+        const productSeasons = product.seasonality || [];
+        const seasonFit = productSeasons.length === 0 ? 80
+          : productSeasons.includes(currentSeason as any) ? 90 : 70;
+
+        // Calculate audienceFit (0-100) based on engagement rate and follower count
+        const audienceFit = Math.min(100, Math.round(70 + creator.engagementRate * 5));
+
+        // Composite score
+        const matchScore = Math.round(
+          categoryFit * 0.4 + priceFit * 0.3 + seasonFit * 0.2 + audienceFit * 0.1
+        );
+
+        // Revenue prediction
+        const monthlyAvgSales = Math.max(1, Math.round(creator.totalSales / 12));
+        const predictedQuantity = monthlyAvgSales;
+        const expectedRevenue = predictedQuantity * product.price;
+        const predictedCommission = expectedRevenue * product.avgCommissionRate;
+
+        return {
+          creator,
+          matchScore,
+          matchBreakdown: {
+            categoryFit: Math.round(categoryFit),
+            priceFit: Math.round(priceFit),
+            seasonFit,
+            audienceFit,
+          },
+          predictedRevenue: {
+            minimum: Math.round(expectedRevenue * 0.7),
+            expected: Math.round(expectedRevenue),
+            maximum: Math.round(expectedRevenue * 1.4),
+            predictedQuantity,
+            predictedCommission: Math.round(predictedCommission),
+            basis: `월평균 ${monthlyAvgSales}건 판매 기준`,
+          },
+          reasoning: `${creator.name}님은 ${isTopCategory ? '주력' : hasCategory ? '관련' : '새로운'} 카테고리(${product.category})에서 활동하며, 평균 주문 가치 ${Math.round(avgOrderValue).toLocaleString()}원으로 제품 가격대와 ${priceDiff < 0.2 ? '매우 유사합니다' : '적절한 범위입니다'}.`,
+          confidence: Math.round(60 + Math.random() * 25),
+        };
+      })
+      .filter((m): m is NonNullable<typeof m> => m !== null)
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, limit);
+  }
 
   // Cache the result
   setCache(cacheKey, matches);

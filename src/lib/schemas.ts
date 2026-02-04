@@ -281,3 +281,11 @@ export const ProductMatchListSchema = z.object({
     })
   ),
 });
+
+/**
+ * GetCreatorMatchesRequest Zod schema
+ */
+export const GetCreatorMatchesRequestSchema = z.object({
+  productId: z.string().min(1, 'Product ID is required'),
+  limit: z.number().int().min(1).max(50).optional().default(10),
+});

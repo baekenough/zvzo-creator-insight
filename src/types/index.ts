@@ -235,3 +235,30 @@ export interface PaginatedResponse<T> {
   pagination: Pagination;
   error?: string;
 }
+
+/**
+ * AI-recommended creator match for a product
+ */
+export interface CreatorMatch {
+  creator: Creator;
+  matchScore: number;
+  matchBreakdown: {
+    categoryFit: number;
+    priceFit: number;
+    seasonFit: number;
+    audienceFit: number;
+  };
+  predictedRevenue: RevenuePrediction;
+  reasoning: string;
+  confidence: number;
+}
+
+/**
+ * Product statistics for product dashboard
+ */
+export interface ProductStats {
+  totalProducts: number;
+  avgPrice: number;
+  mostPopularCategory: string;
+  avgCommissionRate: number;
+}

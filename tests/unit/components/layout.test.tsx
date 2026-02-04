@@ -16,6 +16,7 @@ describe('Header', () => {
     expect(screen.getByText(/ZVZO/)).toBeInTheDocument();
     expect(screen.getByText(/Creator Insight/)).toBeInTheDocument();
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Products')).toBeInTheDocument();
     expect(screen.getByText('About')).toBeInTheDocument();
   });
 

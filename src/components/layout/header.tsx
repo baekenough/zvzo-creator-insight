@@ -12,6 +12,7 @@ export interface HeaderProps {
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Products', href: '/products' },
   { label: 'About', href: '/about' },
 ];
 
