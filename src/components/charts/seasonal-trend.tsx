@@ -72,7 +72,7 @@ export function SeasonalTrend({
   };
 
   const formatTooltipValue = (value: number, name: string) => {
-    if (name === 'revenue') {
+    if (name === '매출' || name === 'revenue') {
       return [formatCurrency(value), '매출'];
     }
     return [`${formatNumber(value)}건`, '판매 건수'];
