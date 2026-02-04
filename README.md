@@ -1,14 +1,14 @@
 # ZVZO Creator Insight
 
-> 크리에이터의 판매 데이터를 AI로 분석하여 최적의 제품 매칭과 매출 예측을 제공하는 대시보드
+> 크리에이터와 제품을 양방향으로 AI 매칭하여 최적의 협업을 제안하는 플랫폼
 
-AI 기반 크리에이터 분석 플랫폼으로, 과거 판매 이력을 학습하여 각 크리에이터의 강점과 최적 가격대를 파악하고, 가장 적합한 제품을 추천합니다.
+AI 기반 크리에이터-제품 매칭 플랫폼으로, 크리에이터에게는 최적의 제품을, 기업에게는 최적의 크리에이터를 추천합니다. 과거 판매 이력을 학습하여 각 크리에이터의 강점과 최적 가격대를 파악하고, 제품 특성에 맞는 크리에이터를 발굴합니다.
 
 ---
 
 ## 📸 데모
 
-- **라이브 데모**: [https://zvzo-creator-insight.vercel.app](https://zvzo-creator-insight.vercel.app) _(배포 후 업데이트 예정)_
+- **라이브 데모**: [https://doers-ten.vercel.app](https://doers-ten.vercel.app)
 - **스크린샷**: _(추가 예정)_
 
 ---
@@ -36,6 +36,13 @@ AI가 크리에이터의 판매 이력을 심층 분석하여 다음을 파악�
 - **예상 커미션**: 크리에이터가 받을 예상 수익
 - **근거 제시**: 예측의 기반이 되는 데이터 명시
 
+### 4. 제품 기반 크리에이터 추천
+기업이 제품을 기준으로 최적의 크리에이터를 AI가 추천합니다:
+- **제품 카탈로그**: 50개 제품을 카테고리, 가격대별로 탐색
+- **역방향 매칭**: 제품 특성에 맞는 크리에이터를 4가지 적합도로 평가
+- **크리에이터 비교**: 추천된 크리에이터 2~3명을 나란히 비교
+- **판매 이력 분석**: 해당 제품의 크리에이터별 판매 실적 확인
+
 ---
 
 ## 🛠️ 기술 스택
@@ -61,56 +68,79 @@ AI가 크리에이터의 판매 이력을 심층 분석하여 다음을 파악�
 ```
 zvzo-creator-insight/
 ├── src/
-│   ├── app/                        # Next.js App Router
-│   │   ├── api/                    # API routes
-│   │   │   ├── match/              # POST /api/match - Product matching
-│   │   │   ├── analyze/            # POST /api/analyze - Creator insight
-│   │   │   └── creators/           # GET /api/creators - Creator data
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── analyze/           # POST /api/analyze
+│   │   │   ├── creators/          # GET /api/creators
+│   │   │   ├── products/          # GET /api/products
+│   │   │   └── match/
+│   │   │       ├── route.ts       # POST /api/match (creator→product)
+│   │   │       └── creators/
+│   │   │           └── route.ts   # POST /api/match/creators (product→creator)
 │   │   ├── creator/
 │   │   │   └── [id]/
-│   │   │       ├── page.tsx        # Creator detail page
+│   │   │       ├── page.tsx       # Creator detail
 │   │   │       └── match/
-│   │   │           └── page.tsx    # Product match page
-│   │   ├── dashboard/              # Main dashboard
-│   │   ├── about/                  # About page
-│   │   ├── layout.tsx              # Root layout
-│   │   ├── page.tsx                # Home page
-│   │   └── globals.css             # Global styles
-│   ├── components/                 # React components
-│   │   ├── match/                  # Match-related components
-│   │   │   ├── match-card.tsx
-│   │   │   ├── match-section.tsx
+│   │   │           └── page.tsx   # Product match for creator
+│   │   ├── products/
+│   │   │   ├── page.tsx           # Product catalog
+│   │   │   └── [id]/
+│   │   │       ├── page.tsx       # Product detail
+│   │   │       └── match/
+│   │   │           └── page.tsx   # Creator match for product
+│   │   ├── dashboard/             # Creator dashboard
+│   │   ├── about/                 # About page
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── match/                 # Match components
+│   │   │   ├── match-card.tsx            # Product match card
+│   │   │   ├── match-section.tsx         # Product match section
+│   │   │   ├── creator-match-card.tsx    # Creator match card (NEW)
+│   │   │   ├── creator-match-section.tsx # Creator match section (NEW)
 │   │   │   ├── match-score-breakdown.tsx
 │   │   │   ├── revenue-prediction-bar.tsx
 │   │   │   ├── compare-modal.tsx
 │   │   │   └── reasoning-text.tsx
-│   │   ├── charts/                 # Chart components
-│   │   │   └── match-score-gauge.tsx
-│   │   ├── creator/                # Creator components
-│   │   │   └── creator-profile.tsx
-│   │   ├── layout/                 # Layout components
-│   │   │   ├── header.tsx
-│   │   │   ├── footer.tsx
-│   │   │   └── page-container.tsx
-│   │   └── ui/                     # Base UI components
-│   ├── data/                       # Mock data & loaders
-│   │   ├── index.ts                # Data access functions
-│   │   ├── creators.ts             # Creator mock data
-│   │   ├── products.ts             # Product mock data
-│   │   └── sales-history.ts        # Sales records
-│   ├── types/                      # TypeScript types
-│   │   └── index.ts                # All type definitions
-│   ├── lib/                        # Utilities
-│   │   └── utils.ts                # Helper functions
-│   ├── hooks/                      # Custom React hooks
-│   └── utils/                      # Additional utilities
-├── public/                         # Static assets
-├── .husky/                         # Git hooks
-├── vitest.config.ts                # Vitest configuration
-├── tailwind.config.ts              # Tailwind configuration
-├── tsconfig.json                   # TypeScript configuration
-├── next.config.js                  # Next.js configuration
-└── package.json                    # Dependencies
+│   │   ├── charts/                # Recharts components
+│   │   │   ├── match-score-gauge.tsx
+│   │   │   ├── category-chart.tsx
+│   │   │   ├── price-distribution.tsx
+│   │   │   ├── seasonal-trend.tsx
+│   │   │   └── revenue-forecast.tsx
+│   │   ├── creator/               # Creator components
+│   │   │   ├── creator-card.tsx
+│   │   │   ├── creator-profile.tsx
+│   │   │   ├── analysis-section.tsx
+│   │   │   ├── analyze-button.tsx
+│   │   │   ├── insight-summary.tsx
+│   │   │   └── sales-table.tsx
+│   │   ├── products/              # Product components (NEW)
+│   │   │   ├── product-list.tsx
+│   │   │   ├── product-card.tsx
+│   │   │   ├── product-profile.tsx
+│   │   │   └── product-sales-table.tsx
+│   │   ├── dashboard/             # Dashboard components
+│   │   │   └── creator-list.tsx
+│   │   ├── common/                # Shared components
+│   │   ├── layout/                # Layout components
+│   │   └── ui/                    # Base UI components
+│   ├── data/                      # Mock data (20 creators, 50 products, sales history)
+│   ├── types/                     # TypeScript type definitions
+│   └── lib/                       # Utilities, analysis, OpenAI integration
+├── tests/                         # 835 tests (Vitest + RTL)
+│   └── unit/
+│       ├── api/                   # API route tests
+│       ├── components/            # Component tests
+│       ├── lib/                   # Library tests
+│       ├── data/                  # Data layer tests
+│       └── pages/                 # Page tests
+├── public/
+├── vitest.config.ts
+├── tailwind.config.ts
+├── tsconfig.json
+├── next.config.js
+└── package.json
 ```
 
 ---
@@ -128,7 +158,7 @@ zvzo-creator-insight/
 1. 레포지토리 클론
 
 ```bash
-git clone https://github.com/your-username/zvzo-creator-insight.git
+git clone https://github.com/baekenough/zvzo-creator-insight.git
 cd zvzo-creator-insight
 ```
 
@@ -207,30 +237,41 @@ pnpm typecheck
 
 ---
 
+## 📡 API 엔드포인트
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/creators | 크리에이터 목록 (필터링, 정렬, 페이지네이션) |
+| GET | /api/products | 제품 목록 (필터링, 정렬, 페이지네이션) |
+| POST | /api/analyze | AI 크리에이터 분석 |
+| POST | /api/match | 크리에이터→제품 매칭 |
+| POST | /api/match/creators | 제품→크리에이터 매칭 |
+
+---
+
 ## 🏗️ 아키텍처
 
 ### 데이터 흐름
 
 ```
-Mock Data (creators, products, sales)
+Mock Data (20 creators, 50 products, sales history)
         │
         ▼
     Data Loader (src/data/index.ts)
         │
-        ▼
-    API Route (/api/analyze, /api/match)
-        │
-        ▼
-    OpenAI GPT-4o (AI 분석)
-        │
-        ▼
-    Structured Response (CreatorInsight, ProductMatch)
-        │
-        ▼
-    React Components (UI 렌더링)
-        │
-        ▼
-    User Interface (Dashboard, Match page)
+    ┌───┴───┐
+    ▼       ▼
+/api/analyze  /api/match    /api/match/creators
+(Creator AI)  (Creator→Product)  (Product→Creator)
+    │         │                    │
+    ▼         ▼                    ▼
+OpenAI GPT-4o (with fallback scoring)
+    │
+    ▼
+Structured Response (Zod validated)
+    │
+    ▼
+React Components (Dashboard, Product Catalog, Match pages)
 ```
 
 ### AI 분석 파이프라인
@@ -287,9 +328,10 @@ test: Add tests for match-card component
 
 ### 테스트
 
-- **Vitest**: 빠른 단위 테스트 실행
+- **Vitest**: 빠른 단위 테스트 실행 (835개 테스트)
 - **React Testing Library**: 컴포넌트 테스트
 - **@vitest/coverage-v8**: 코드 커버리지 측정
+- **테스트 범위**: API routes, components, pages, libraries, data layer
 
 ---
 
@@ -333,7 +375,7 @@ SOFTWARE.
 
 ## 📧 문의
 
-- **GitHub Issues**: [프로젝트 이슈 페이지](https://github.com/your-username/zvzo-creator-insight/issues)
+- **GitHub Issues**: [프로젝트 이슈 페이지](https://github.com/baekenough/zvzo-creator-insight/issues)
 - **Email**: contact@zvzo.com _(업데이트 예정)_
 
 ---
