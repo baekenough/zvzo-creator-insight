@@ -379,8 +379,29 @@ export async function analyzeCreatorWithData(
       salesCount: 0,
       totalRevenue: 0,
     })),
-    priceRange: response.priceRange,
+    priceRange: {
+      ...response.priceRange,
+      distribution: preprocessed.priceDistribution.map((p) => ({
+        range: p.priceRange,
+        count: p.salesCount,
+        revenue: p.revenue,
+      })),
+    },
     seasonalTrends: response.seasonalTrends,
+    seasonalPattern: preprocessed.seasonalPattern.map((s) => ({
+      season: s.season,
+      salesCount: s.salesCount,
+      revenue: s.revenue,
+    })),
+    conversionMetrics: {
+      avgConversionRate: preprocessed.summary.totalSales > 0
+        ? Number((preprocessed.summary.totalRevenue / preprocessed.summary.totalSales / 1000).toFixed(2))
+        : 0,
+      bestConversionCategory: preprocessed.categoryBreakdown[0]?.category || 'N/A',
+      followerToPurchaseRatio: creator.followers > 0
+        ? Number((preprocessed.summary.totalSales / creator.followers * 100).toFixed(4))
+        : 0,
+    },
     recommendations: response.recommendations,
     confidence: response.confidence,
     analyzedAt: new Date().toISOString(),

@@ -343,7 +343,8 @@ describe('analyzeCreatorWithData', () => {
       { category: 'Beauty', score: 60, salesCount: 0, totalRevenue: 0 },
       { category: 'Fashion', score: 40, salesCount: 0, totalRevenue: 0 },
     ]);
-    expect(result.priceRange).toEqual(mockAIResponse.priceRange);
+    expect(result.priceRange).toEqual(expect.objectContaining(mockAIResponse.priceRange));
+    expect(result.priceRange.distribution).toBeDefined();
     expect(result.seasonalTrends).toEqual(mockAIResponse.seasonalTrends);
     expect(result.recommendations).toEqual(mockAIResponse.recommendations);
     expect(result.confidence).toBe(mockAIResponse.confidence);
