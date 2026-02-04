@@ -33,7 +33,7 @@ export const CreatorSchema = z.object({
   id: z.string().regex(/^creator-\d{3}$/, 'ID는 creator-XXX 형식이어야 합니다'),
   name: z.string().min(1, '이름은 필수입니다'),
   platform: PlatformSchema,
-  followerCount: z
+  followers: z
     .number()
     .int('정수여야 합니다')
     .min(10000, '최소 팔로워 수는 10,000명입니다')
@@ -58,7 +58,7 @@ export const ProductSchema = z.object({
     .int('정수여야 합니다')
     .min(10000, '최소 가격은 10,000원입니다')
     .max(200000, '최대 가격은 200,000원입니다'),
-  brandName: z.string().min(1, '브랜드명은 필수입니다'),
+  brand: z.string().min(1, '브랜드명은 필수입니다'),
   imageUrl: z.string().url('유효한 URL이어야 합니다'),
   description: z.string().min(1, '제품 설명은 필수입니다'),
 });
@@ -70,7 +70,7 @@ export const SaleRecordSchema = z.object({
   id: z.string().regex(/^sale-\d{5}$/, 'ID는 sale-XXXXX 형식이어야 합니다'),
   creatorId: z.string().regex(/^creator-\d{3}$/),
   productId: z.string().regex(/^product-\d{3}$/),
-  soldAt: z.string().datetime('ISO 8601 날짜 형식이어야 합니다'),
+  date: z.string().datetime('ISO 8601 날짜 형식이어야 합니다'),
   quantity: z.number().int().min(1, '최소 판매 수량은 1개입니다'),
   revenue: z.number().min(0, '수익은 0 이상이어야 합니다'),
   commission: z.number().min(0, '수수료는 0 이상이어야 합니다'),
@@ -274,6 +274,8 @@ export const ProductMatchListSchema = z.object({
         min: z.number(),
         max: z.number(),
         average: z.number(),
+        predictedQuantity: z.number().optional(),
+        predictedCommission: z.number().optional(),
       }),
       reasoning: z.string(),
     })

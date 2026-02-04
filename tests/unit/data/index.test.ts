@@ -84,7 +84,7 @@ describe('data/index.ts', () => {
     });
 
     it('should return products for all valid categories', () => {
-      const categories = ['Beauty', 'Fashion', 'Food', 'Tech', 'Travel'] as const;
+      const categories = ['Beauty', 'Fashion', 'Food', 'Tech', 'Lifestyle'] as const;
 
       categories.forEach((category) => {
         const products = getProductsByCategory(category);
@@ -247,7 +247,7 @@ describe('data/index.ts', () => {
 
         if (stats && stats.topCategory) {
           expect(typeof stats.topCategory).toBe('string');
-          expect(['Beauty', 'Fashion', 'Food', 'Tech', 'Travel']).toContain(stats.topCategory);
+          expect(['Beauty', 'Fashion', 'Food', 'Tech', 'Lifestyle', 'HomeLiving', 'Health', 'BabyKids', 'Pet', 'Stationery']).toContain(stats.topCategory);
         }
       }
     });

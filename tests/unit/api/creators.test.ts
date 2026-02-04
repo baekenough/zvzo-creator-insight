@@ -55,7 +55,7 @@ describe('GET /api/creators', () => {
 
     expect(data.success).toBe(true);
     if (data.data.length > 1) {
-      expect(data.data[0].followerCount).toBeGreaterThanOrEqual(data.data[1].followerCount);
+      expect(data.data[0].followers).toBeGreaterThanOrEqual(data.data[1].followers);
     }
   });
 
@@ -116,7 +116,7 @@ describe('GET /api/creators', () => {
 
     expect(data.success).toBe(true);
     if (data.data.length > 1) {
-      expect(data.data[0].followerCount).toBeGreaterThanOrEqual(data.data[1].followerCount);
+      expect(data.data[0].followers).toBeGreaterThanOrEqual(data.data[1].followers);
     }
   });
 

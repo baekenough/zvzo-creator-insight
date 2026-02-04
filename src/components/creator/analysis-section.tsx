@@ -74,7 +74,7 @@ export function AnalysisSection({ creatorId, className }: AnalysisSectionProps) 
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 가격대별 판매 분포
               </h3>
-              <PriceDistribution data={insight.priceRange.distribution} height={350} />
+              <PriceDistribution data={insight.priceRange.distribution || []} height={350} />
             </div>
           </div>
 
@@ -83,7 +83,7 @@ export function AnalysisSection({ creatorId, className }: AnalysisSectionProps) 
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               시즌별 판매 트렌드
             </h3>
-            <SeasonalTrend data={insight.seasonalPattern} height={400} />
+            <SeasonalTrend data={insight.seasonalPattern || []} height={400} />
           </div>
 
           {/* Conversion Metrics */}
@@ -93,19 +93,19 @@ export function AnalysisSection({ creatorId, className }: AnalysisSectionProps) 
               <div className="bg-blue-50 rounded-lg p-4">
                 <p className="text-sm text-gray-600 mb-1">평균 전환율</p>
                 <p className="text-2xl font-bold text-blue-600">
-                  {insight.conversionMetrics.avgConversionRate.toFixed(2)}%
+                  {insight.conversionMetrics?.avgConversionRate.toFixed(2)}%
                 </p>
               </div>
               <div className="bg-green-50 rounded-lg p-4">
                 <p className="text-sm text-gray-600 mb-1">최고 전환 카테고리</p>
                 <p className="text-2xl font-bold text-green-600">
-                  {insight.conversionMetrics.bestConversionCategory}
+                  {insight.conversionMetrics?.bestConversionCategory}
                 </p>
               </div>
               <div className="bg-purple-50 rounded-lg p-4">
                 <p className="text-sm text-gray-600 mb-1">팔로워당 구매 비율</p>
                 <p className="text-2xl font-bold text-purple-600">
-                  {insight.conversionMetrics.followerToPurchaseRatio.toFixed(2)}%
+                  {insight.conversionMetrics?.followerToPurchaseRatio.toFixed(2)}%
                 </p>
               </div>
             </div>

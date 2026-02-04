@@ -116,7 +116,9 @@ describe('MatchCard', () => {
 
     expect(screen.getByText('신뢰도')).toBeInTheDocument();
     expect(screen.getByText((content, element) => {
-      return element?.classList?.contains('rounded-full') && content.includes('높음');
+      const hasClass = element?.classList?.contains('rounded-full');
+      const hasText = content.includes('높음');
+      return !!(hasClass && hasText);
     })).toBeInTheDocument();
   });
 
@@ -150,7 +152,7 @@ describe('MatchCard', () => {
   it('should show fallback image when imageUrl is missing', () => {
     const matchWithoutImage = {
       ...mockMatch,
-      product: { ...mockProduct, imageUrl: undefined },
+      product: { ...mockProduct, imageUrl: '' },
     };
     render(<MatchCard match={matchWithoutImage} />);
 
@@ -176,7 +178,9 @@ describe('MatchCard', () => {
     fireEvent.click(toggleButton);
 
     expect(screen.getByText((content, element) => {
-      return element?.classList?.contains('rounded-full') && content.includes('보통');
+      const hasClass = element?.classList?.contains('rounded-full');
+      const hasText = content.includes('보통');
+      return !!(hasClass && hasText);
     })).toBeInTheDocument();
   });
 
@@ -188,7 +192,9 @@ describe('MatchCard', () => {
     fireEvent.click(toggleButton);
 
     expect(screen.getByText((content, element) => {
-      return element?.classList?.contains('rounded-full') && content.includes('낮음');
+      const hasClass = element?.classList?.contains('rounded-full');
+      const hasText = content.includes('낮음');
+      return !!(hasClass && hasText);
     })).toBeInTheDocument();
   });
 

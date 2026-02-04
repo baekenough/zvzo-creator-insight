@@ -77,7 +77,7 @@ describe('POST /api/analyze', () => {
     expect(data.data).toHaveProperty('strengths');
     expect(data.data).toHaveProperty('topCategories');
     expect(data.data).toHaveProperty('priceRange');
-    expect(data.data).toHaveProperty('seasonalTrends');
+    expect(data.data).toHaveProperty('seasonalPattern');
     expect(data.data).toHaveProperty('recommendations');
     expect(data.data).toHaveProperty('confidence');
     expect(data.data).toHaveProperty('analyzedAt');
@@ -106,8 +106,8 @@ describe('POST /api/analyze - INSUFFICIENT_DATA', () => {
     // Spy on getSalesByCreator to return insufficient data
     const dataModule = await import('@/data');
     const spy = vi.spyOn(dataModule, 'getSalesByCreator').mockReturnValue([
-      { id: 'sale-1', creatorId: 'creator-001', productId: 'product-1', quantity: 1, revenue: 50000, commission: 7500, conversionRate: 0.05, soldAt: '2024-01-01' },
-      { id: 'sale-2', creatorId: 'creator-001', productId: 'product-2', quantity: 1, revenue: 30000, commission: 4500, conversionRate: 0.04, soldAt: '2024-01-02' },
+      { id: 'sale-1', creatorId: 'creator-001', productId: 'product-1', productName: 'Product 1', category: 'Beauty', price: 50000, originalPrice: 60000, discountRate: 16.67, quantity: 1, revenue: 50000, commission: 7500, commissionRate: 15, conversionRate: 0.05, clickCount: 20, date: '2024-01-01', platform: 'Instagram' },
+      { id: 'sale-2', creatorId: 'creator-001', productId: 'product-2', productName: 'Product 2', category: 'Beauty', price: 30000, originalPrice: 35000, discountRate: 14.29, quantity: 1, revenue: 30000, commission: 4500, commissionRate: 15, conversionRate: 0.04, clickCount: 25, date: '2024-01-02', platform: 'Instagram' },
     ]);
 
     const request = new NextRequest('http://localhost:3000/api/analyze', {

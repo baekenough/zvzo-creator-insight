@@ -26,7 +26,7 @@ describe('getCreators', () => {
     expect(creator).toHaveProperty('id');
     expect(creator).toHaveProperty('name');
     expect(creator).toHaveProperty('platform');
-    expect(creator).toHaveProperty('followerCount');
+    expect(creator).toHaveProperty('followers');
     expect(creator).toHaveProperty('categories');
     expect(creator).toHaveProperty('email');
     expect(creator).toHaveProperty('joinedAt');
@@ -80,7 +80,7 @@ describe('getProducts', () => {
     expect(product).toHaveProperty('name');
     expect(product).toHaveProperty('category');
     expect(product).toHaveProperty('price');
-    expect(product).toHaveProperty('brandName');
+    expect(product).toHaveProperty('brand');
     expect(product).toHaveProperty('imageUrl');
     expect(product).toHaveProperty('description');
   });
@@ -170,7 +170,7 @@ describe('getSalesHistory', () => {
     expect(sale).toHaveProperty('id');
     expect(sale).toHaveProperty('creatorId');
     expect(sale).toHaveProperty('productId');
-    expect(sale).toHaveProperty('soldAt');
+    expect(sale).toHaveProperty('date');
     expect(sale).toHaveProperty('quantity');
     expect(sale).toHaveProperty('revenue');
     expect(sale).toHaveProperty('commission');
@@ -181,8 +181,8 @@ describe('getSalesHistory', () => {
   it('should be sorted by date', () => {
     const sales = getSalesHistory();
     for (let i = 1; i < sales.length; i++) {
-      const prevDate = new Date(sales[i - 1].soldAt);
-      const currentDate = new Date(sales[i].soldAt);
+      const prevDate = new Date(sales[i - 1].date);
+      const currentDate = new Date(sales[i].date);
       expect(currentDate.getTime()).toBeGreaterThanOrEqual(prevDate.getTime());
     }
   });

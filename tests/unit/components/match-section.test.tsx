@@ -33,7 +33,7 @@ describe('MatchSection', () => {
     id: 'creator-123',
     name: 'Alice Kim',
     profileImage: '/alice.jpg',
-    platform: 'instagram' as const,
+    platform: 'Instagram' as const,
     followers: 50000,
     engagementRate: 3.5,
     categories: ['Beauty', 'Fashion', 'Lifestyle'],

@@ -124,8 +124,8 @@ describe('POST /api/match - INSUFFICIENT_DATA', () => {
     // Spy on getSalesByCreator to return insufficient data
     const dataModule = await import('@/data');
     const spy = vi.spyOn(dataModule, 'getSalesByCreator').mockReturnValue([
-      { id: 'sale-1', creatorId: 'creator-001', productId: 'product-1', quantity: 1, revenue: 50000, commission: 7500, conversionRate: 0.05, soldAt: '2024-01-01' },
-      { id: 'sale-2', creatorId: 'creator-001', productId: 'product-2', quantity: 2, revenue: 60000, commission: 9000, conversionRate: 0.06, soldAt: '2024-01-02' },
+      { id: 'sale-1', creatorId: 'creator-001', productId: 'product-1', productName: 'Product 1', category: 'Beauty', price: 50000, originalPrice: 60000, discountRate: 16.67, quantity: 1, revenue: 50000, commission: 7500, commissionRate: 15, conversionRate: 0.05, clickCount: 100, date: '2024-01-01', platform: 'Instagram' },
+      { id: 'sale-2', creatorId: 'creator-001', productId: 'product-2', productName: 'Product 2', category: 'Beauty', price: 30000, originalPrice: 35000, discountRate: 14.29, quantity: 2, revenue: 60000, commission: 9000, commissionRate: 15, conversionRate: 0.06, clickCount: 150, date: '2024-01-02', platform: 'Instagram' },
     ]);
 
     const request = new NextRequest('http://localhost:3000/api/match', {

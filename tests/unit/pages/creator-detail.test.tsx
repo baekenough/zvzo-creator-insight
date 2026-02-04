@@ -71,7 +71,7 @@ const mockCreator: Creator = {
   id: 'creator-001',
   name: '김지은',
   profileImage: '/images/creator-001.jpg',
-  platform: 'instagram',
+  platform: 'Instagram',
   followers: 250000,
   engagementRate: 3.8,
   categories: ['Beauty', 'Fashion'],
@@ -83,6 +83,7 @@ const mockCreator: Creator = {
 const mockSales: SaleRecord[] = [
   {
     id: 'sale-001',
+    creatorId: 'creator-001',
     productId: 'prod-001',
     productName: '글로우 세럼',
     category: 'Beauty',
@@ -93,11 +94,14 @@ const mockSales: SaleRecord[] = [
     revenue: 90000,
     commission: 9000,
     commissionRate: 10,
+    clickCount: 100,
+    conversionRate: 3.5,
     date: '2025-01-20T10:00:00Z',
-    platform: 'instagram',
+    platform: 'Instagram',
   },
   {
     id: 'sale-002',
+    creatorId: 'creator-001',
     productId: 'prod-002',
     productName: '데님 자켓',
     category: 'Fashion',
@@ -108,8 +112,10 @@ const mockSales: SaleRecord[] = [
     revenue: 89000,
     commission: 8900,
     commissionRate: 10,
+    clickCount: 100,
+    conversionRate: 3.5,
     date: '2025-01-21T14:30:00Z',
-    platform: 'instagram',
+    platform: 'Instagram',
   },
 ];
 
@@ -133,7 +139,7 @@ describe('CreatorPage', () => {
   });
 
   it('should call notFound when creator does not exist', () => {
-    vi.mocked(data.getCreatorById).mockReturnValue(null);
+    vi.mocked(data.getCreatorById).mockReturnValue(undefined);
 
     // Suppress console.error for this test since notFound throws
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

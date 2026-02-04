@@ -42,7 +42,7 @@ const mockCreator: Creator = {
   id: 'creator-001',
   name: '김지은',
   profileImage: '/images/creator-001.jpg',
-  platform: 'instagram',
+  platform: 'Instagram',
   followers: 250000,
   engagementRate: 3.8,
   categories: ['Beauty', 'Fashion'],
@@ -70,7 +70,7 @@ describe('MatchPage', () => {
   });
 
   it('should call notFound when creator does not exist', () => {
-    vi.mocked(data.getCreatorById).mockReturnValue(null);
+    vi.mocked(data.getCreatorById).mockReturnValue(undefined);
 
     // Suppress console.error for this test since notFound throws
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

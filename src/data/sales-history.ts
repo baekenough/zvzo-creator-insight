@@ -138,10 +138,10 @@ function generateSalesHistory(): SaleRecord[] {
 
       // Get seasonal weight
       const seasonWeight =
-        seasonalWeights[season][product.category] || 1.0;
+        seasonalWeights[season][product.category as Category] || 1.0;
 
       // Base conversion rate for this category
-      const [minRate, maxRate] = conversionRates[product.category];
+      const [minRate, maxRate] = conversionRates[product.category as Category];
       const baseConversionRate = randomFloat(minRate, maxRate);
 
       // Apply price multiplier and seasonal weight
@@ -158,18 +158,30 @@ function generateSalesHistory(): SaleRecord[] {
       );
 
       const revenue = quantity * product.price;
-      const commission = Math.floor(
-        revenue * commissionRates[product.category]
+      const commissionRate = commissionRates[product.category as Category];
+      const commission = Math.floor(revenue * commissionRate);
+
+      // Calculate originalPrice (fallback if not available)
+      const originalPrice = Math.floor(product.price * 1.2);
+      const discountRate = Number(
+        ((originalPrice - product.price) / originalPrice * 100).toFixed(1)
       );
 
       salesHistory.push({
         id: `sale-${String(saleIdCounter).padStart(5, '0')}`,
         creatorId: creator.id,
         productId: product.id,
-        soldAt: soldAt.toISOString(),
+        productName: product.name,
+        category: product.category,
+        price: product.price,
+        originalPrice,
+        discountRate,
         quantity,
         revenue,
         commission,
+        commissionRate,
+        date: soldAt.toISOString(),
+        platform: creator.platform,
         clickCount,
         conversionRate: Number(
           ((quantity / clickCount) * 100).toFixed(2)
@@ -180,9 +192,9 @@ function generateSalesHistory(): SaleRecord[] {
     }
   });
 
-  // Sort by soldAt date
+  // Sort by date
   return salesHistory.sort(
-    (a, b) => new Date(a.soldAt).getTime() - new Date(b.soldAt).getTime()
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 }
 

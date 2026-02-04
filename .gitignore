@@ -42,3 +42,4 @@ coverage/
 
 # internal design docs (not for public repo)
 docs/plans/
+.vercel

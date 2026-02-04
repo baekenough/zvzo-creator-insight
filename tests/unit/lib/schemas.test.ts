@@ -80,7 +80,7 @@ describe('CreatorSchema', () => {
     id: 'creator-001',
     name: '김지은',
     platform: 'Instagram',
-    followerCount: 250000,
+    followers: 250000,
     categories: ['Beauty', 'Fashion'],
     email: 'jieun.kim@example.com',
     joinedAt: '2025-01-15T09:00:00Z',
@@ -106,13 +106,13 @@ describe('CreatorSchema', () => {
 
   it('should reject invalid follower count', () => {
     expect(() =>
-      CreatorSchema.parse({ ...validCreator, followerCount: 5000 })
+      CreatorSchema.parse({ ...validCreator, followers: 5000 })
     ).toThrow();
     expect(() =>
-      CreatorSchema.parse({ ...validCreator, followerCount: 2000000 })
+      CreatorSchema.parse({ ...validCreator, followers: 2000000 })
     ).toThrow();
     expect(() =>
-      CreatorSchema.parse({ ...validCreator, followerCount: 100.5 })
+      CreatorSchema.parse({ ...validCreator, followers: 100.5 })
     ).toThrow();
   });
 
@@ -147,7 +147,7 @@ describe('ProductSchema', () => {
     name: '글로우 세럼',
     category: 'Beauty',
     price: 45000,
-    brandName: '글로우랩',
+    brand: '글로우랩',
     imageUrl: 'https://example.com/images/glow-serum.jpg',
     description: '피부 탄력을 높여주는 고농축 세럼',
   };
@@ -189,7 +189,7 @@ describe('ProductSchema', () => {
       ProductSchema.parse({ ...validProduct, name: '' })
     ).toThrow();
     expect(() =>
-      ProductSchema.parse({ ...validProduct, brandName: '' })
+      ProductSchema.parse({ ...validProduct, brand: '' })
     ).toThrow();
     expect(() =>
       ProductSchema.parse({ ...validProduct, description: '' })
@@ -202,7 +202,7 @@ describe('SaleRecordSchema', () => {
     id: 'sale-00001',
     creatorId: 'creator-001',
     productId: 'product-015',
-    soldAt: '2025-08-15T14:30:00Z',
+    date: '2025-08-15T14:30:00Z',
     quantity: 3,
     revenue: 135000,
     commission: 20250,

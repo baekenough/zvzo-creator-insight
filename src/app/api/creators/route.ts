@@ -35,16 +35,16 @@ export async function GET(request: NextRequest) {
           bVal = b.name;
           break;
         case 'followers':
-          aVal = a.followerCount;
-          bVal = b.followerCount;
+          aVal = a.followers;
+          bVal = b.followers;
           break;
         case 'engagement':
           aVal = a.engagementRate || 0;
           bVal = b.engagementRate || 0;
           break;
         case 'createdAt':
-          aVal = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-          bVal = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          aVal = a.joinedAt ? new Date(a.joinedAt).getTime() : 0;
+          bVal = b.joinedAt ? new Date(b.joinedAt).getTime() : 0;
           break;
         /* c8 ignore next 3 */
         default:

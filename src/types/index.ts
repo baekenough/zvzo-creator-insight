@@ -1,7 +1,7 @@
 /**
  * Platform types for creator social media platforms
  */
-export type Platform = 'instagram' | 'youtube' | 'tiktok' | 'blog';
+export type Platform = 'Instagram' | 'YouTube' | 'TikTok' | 'blog';
 
 /**
  * Product categories and creator expertise areas
@@ -34,6 +34,7 @@ export interface Creator {
   followers: number;
   engagementRate: number;
   categories: string[];
+  email?: string;
   joinedAt: string;
   totalSales: number;
   totalRevenue: number;
@@ -63,6 +64,7 @@ export interface Product {
  */
 export interface SaleRecord {
   id: string;
+  creatorId: string;
   productId: string;
   productName: string;
   category: string;
@@ -75,6 +77,8 @@ export interface SaleRecord {
   commissionRate: number;
   date: string;
   platform: string;
+  clickCount: number;
+  conversionRate: number;
 }
 
 /**
@@ -97,13 +101,14 @@ export interface PriceBucket {
 }
 
 /**
- * Seasonal sales data (monthly)
+ * Seasonal sales data
  */
 export interface SeasonalData {
-  month: number;
+  month?: number;
+  season?: string;
   salesCount: number;
   revenue: number;
-  topCategory: string;
+  topCategory?: string;
 }
 
 /**
@@ -130,6 +135,12 @@ export interface ProductMatch {
     seasonFit: number;
     audienceFit: number;
   };
+  scoreBreakdown?: {
+    categoryFit: number;
+    priceFit: number;
+    seasonFit: number;
+    audienceFit: number;
+  };
   predictedRevenue: RevenuePrediction;
   reasoning: string;
   confidence: number;
@@ -139,17 +150,24 @@ export interface ProductMatch {
  * Creator performance insight analysis
  */
 export interface CreatorInsight {
+  id?: string;
   creatorId: string;
   analyzedAt: string;
   topCategories: CategoryScore[];
   priceRange: {
     min: number;
     max: number;
-    sweetSpot: number;
-    distribution: PriceBucket[];
+    sweetSpot?: number;
+    average?: number;
+    distribution?: PriceBucket[];
   };
-  seasonalPattern: SeasonalData[];
-  conversionMetrics: {
+  seasonalPattern?: SeasonalData[];
+  seasonalTrends?: Array<{
+    season: string;
+    salesCount: number;
+    revenue: number;
+  }>;
+  conversionMetrics?: {
     avgConversionRate: number;
     bestConversionCategory: string;
     followerToPurchaseRatio: number;
@@ -157,6 +175,7 @@ export interface CreatorInsight {
   summary: string;
   strengths: string[];
   recommendations: string[];
+  confidence?: number;
 }
 
 /**

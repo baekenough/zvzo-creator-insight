@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { CreatorCard } from '@/components/creator/creator-card';
 import { CreatorProfile } from '@/components/creator/creator-profile';
@@ -11,7 +11,7 @@ const mockCreator: Creator = {
   id: 'creator-001',
   name: '김지은',
   profileImage: '/images/creator-001.jpg',
-  platform: 'instagram',
+  platform: 'Instagram',
   followers: 250000,
   engagementRate: 3.8,
   categories: ['Beauty', 'Fashion'],
@@ -23,6 +23,7 @@ const mockCreator: Creator = {
 const mockSales: SaleRecord[] = [
   {
     id: 'sale-001',
+    creatorId: 'creator-001',
     productId: 'prod-001',
     productName: '글로우 세럼',
     category: 'Beauty',
@@ -33,11 +34,14 @@ const mockSales: SaleRecord[] = [
     revenue: 90000,
     commission: 9000,
     commissionRate: 10,
+    clickCount: 100,
+    conversionRate: 3.5,
     date: '2025-01-20T10:00:00Z',
-    platform: 'instagram',
+    platform: 'Instagram',
   },
   {
     id: 'sale-002',
+    creatorId: 'creator-001',
     productId: 'prod-002',
     productName: '데님 자켓',
     category: 'Fashion',
@@ -48,8 +52,10 @@ const mockSales: SaleRecord[] = [
     revenue: 89000,
     commission: 8900,
     commissionRate: 10,
+    clickCount: 100,
+    conversionRate: 3.5,
     date: '2025-01-21T14:30:00Z',
-    platform: 'instagram',
+    platform: 'Instagram',
   },
 ];
 
@@ -84,7 +90,7 @@ describe('CreatorCard', () => {
   it('should render creator info', () => {
     render(<CreatorCard creator={mockCreator} />);
     expect(screen.getByText('김지은')).toBeInTheDocument();
-    expect(screen.getByText('instagram')).toBeInTheDocument();
+    expect(screen.getByText('Instagram')).toBeInTheDocument();
   });
 
   it('should format follower count', () => {
@@ -125,13 +131,13 @@ describe('CreatorCard', () => {
     const card = screen.getByRole('button');
     expect(card).toHaveAttribute('aria-label');
     expect(card.getAttribute('aria-label')).toContain('김지은');
-    expect(card.getAttribute('aria-label')).toContain('instagram');
+    expect(card.getAttribute('aria-label')).toContain('Instagram');
   });
 
   it('should show fallback avatar when profileImage is missing', () => {
     const creatorWithoutImage: Creator = {
       ...mockCreator,
-      profileImage: undefined,
+      profileImage: '',
     };
     render(<CreatorCard creator={creatorWithoutImage} />);
     expect(screen.getByText('김')).toBeInTheDocument();
@@ -232,7 +238,7 @@ describe('CreatorCard', () => {
     const creatorWithoutImage: Creator = {
       ...mockCreator,
       name: '테스트',
-      profileImage: undefined,
+      profileImage: '',
     };
     render(<CreatorCard creator={creatorWithoutImage} />);
     expect(screen.getByText('테')).toBeInTheDocument();
@@ -241,19 +247,19 @@ describe('CreatorCard', () => {
   it('should apply correct platform color class', () => {
     const youtubeCreator: Creator = {
       ...mockCreator,
-      platform: 'youtube',
+      platform: 'YouTube',
     };
     render(<CreatorCard creator={youtubeCreator} />);
-    expect(screen.getByText('youtube')).toBeInTheDocument();
+    expect(screen.getByText('YouTube')).toBeInTheDocument();
   });
 
   it('should apply correct platform color class for tiktok', () => {
     const tiktokCreator: Creator = {
       ...mockCreator,
-      platform: 'tiktok',
+      platform: 'TikTok',
     };
     render(<CreatorCard creator={tiktokCreator} />);
-    expect(screen.getByText('tiktok')).toBeInTheDocument();
+    expect(screen.getByText('TikTok')).toBeInTheDocument();
   });
 });
 
@@ -261,7 +267,7 @@ describe('CreatorProfile', () => {
   it('should render creator name and platform', () => {
     render(<CreatorProfile creator={mockCreator} />);
     expect(screen.getByText('김지은')).toBeInTheDocument();
-    expect(screen.getByText('instagram')).toBeInTheDocument();
+    expect(screen.getByText('Instagram')).toBeInTheDocument();
   });
 
   it('should display all category badges', () => {
@@ -286,7 +292,7 @@ describe('CreatorProfile', () => {
   it('should show fallback avatar when profileImage is missing', () => {
     const creatorWithoutImage: Creator = {
       ...mockCreator,
-      profileImage: undefined,
+      profileImage: '',
     };
     render(<CreatorProfile creator={creatorWithoutImage} />);
     expect(screen.getByText('김')).toBeInTheDocument();

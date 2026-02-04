@@ -152,12 +152,15 @@ export function preprocessCreatorData(
   const seasonMap = new Map<string, { salesCount: number; revenue: number }>();
 
   sales.forEach((sale) => {
-    const existing = seasonMap.get(sale.season) || { salesCount: 0, revenue: 0 };
+    const saleDate = new Date(sale.date);
+    const month = saleDate.getMonth() + 1;
+    const season = getSeasonFromMonth(month);
+    const existing = seasonMap.get(season) || { salesCount: 0, revenue: 0 };
 
     existing.salesCount += sale.quantity;
     existing.revenue += sale.revenue;
 
-    seasonMap.set(sale.season, existing);
+    seasonMap.set(season, existing);
   });
 
   const seasonalPattern = Array.from(seasonMap.entries()).map(
@@ -205,7 +208,7 @@ export function preprocessCreatorData(
       id: creator.id,
       name: creator.name,
       platform: creator.platform,
-      followers: creator.followerCount,
+      followers: creator.followers,
       engagementRate: creator.engagementRate,
     },
     summary: {
@@ -370,7 +373,12 @@ export async function analyzeCreatorWithData(
     creatorId: creator.id,
     summary: response.summary,
     strengths: response.strengths,
-    topCategories: response.topCategories,
+    topCategories: response.topCategories.map((cat) => ({
+      category: cat.category,
+      score: cat.percentage,
+      salesCount: 0,
+      totalRevenue: 0,
+    })),
     priceRange: response.priceRange,
     seasonalTrends: response.seasonalTrends,
     recommendations: response.recommendations,
@@ -403,7 +411,7 @@ function buildMatchingPrompt(
 ## 크리에이터 정보
 - 이름: ${creator.name}
 - 플랫폼: ${creator.platform}
-- 팔로워: ${creator.followerCount.toLocaleString()}명
+- 팔로워: ${creator.followers.toLocaleString()}명
 - 참여율: ${creator.engagementRate}%
 
 ## 판매 성향
@@ -423,8 +431,7 @@ ${products
 - 이름: ${p.name}
 - 카테고리: ${p.category}
 - 가격: ${p.price.toLocaleString()}원
-- 시즌: ${p.season}
-- 재고: ${p.stock}개`
+- 시즌: ${p.seasonality.join(', ')}`
   )
   .join('\n')}
 
@@ -555,12 +562,21 @@ export async function matchProductsWithData(
       return {
         product,
         matchScore: match.matchScore,
+        matchBreakdown: match.scoreBreakdown,
         scoreBreakdown: match.scoreBreakdown,
-        predictedRevenue: match.predictedRevenue,
+        predictedRevenue: {
+          minimum: match.predictedRevenue.min,
+          expected: match.predictedRevenue.average,
+          maximum: match.predictedRevenue.max,
+          predictedQuantity: match.predictedRevenue.predictedQuantity || 0,
+          predictedCommission: match.predictedRevenue.predictedCommission || 0,
+          basis: 'AI analysis based on creator sales history',
+        },
         reasoning: match.reasoning,
+        confidence: match.matchScore / 100,
       };
     })
-    .filter((m): m is ProductMatch => m !== null)
+    .filter((m): m is NonNullable<typeof m> => m !== null)
     .sort((a, b) => b.matchScore - a.matchScore)
     .slice(0, limit);
 

@@ -598,6 +598,7 @@ describe('RevenueForecast', () => {
       maximum: 1650000,
       predictedQuantity: 15,
       predictedCommission: 135000,
+      basis: '',
     };
     render(<RevenueForecast prediction={predictionWithoutBasis} />);
     expect(screen.queryByText('예측 근거')).not.toBeInTheDocument();

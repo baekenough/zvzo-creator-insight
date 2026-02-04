@@ -62,14 +62,15 @@ export async function POST(request: NextRequest) {
         ],
         topCategories: preprocessed.categoryBreakdown.slice(0, 3).map((cat) => ({
           category: cat.category,
-          percentage: cat.revenueShare,
+          score: cat.revenueShare,
+          salesCount: cat.salesCount,
+          totalRevenue: cat.revenue,
         })),
         priceRange: {
           min: Math.min(...preprocessed.priceDistribution.map((p) => parseInt(p.priceRange.split('-')[0]))),
           max: Math.max(...preprocessed.priceDistribution.map((p) => parseInt(p.priceRange.split('-')[1]))),
-          average: preprocessed.summary.averageOrderValue,
         },
-        seasonalTrends: preprocessed.seasonalPattern.map((s) => ({
+        seasonalPattern: preprocessed.seasonalPattern.map((s) => ({
           season: s.season,
           salesCount: s.salesCount,
           revenue: s.revenue,

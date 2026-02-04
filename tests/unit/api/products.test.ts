@@ -94,7 +94,7 @@ describe('GET /api/products', () => {
     const product = data.data[0];
     expect(product).toHaveProperty('id');
     expect(product).toHaveProperty('name');
-    expect(product).toHaveProperty('brandName');
+    expect(product).toHaveProperty('brand');
     expect(product).toHaveProperty('category');
     expect(product).toHaveProperty('price');
     expect(product).toHaveProperty('description');
