@@ -67,8 +67,11 @@ export function SeasonalTrend({
     });
   };
 
-  const formatMonth = (month: number) => {
-    return `${month}월`;
+  const xAxisKey = data[0]?.month != null ? 'month' : 'season';
+
+  const formatXLabel = (value: number | string) => {
+    if (typeof value === 'number') return `${value}월`;
+    return String(value);
   };
 
   const formatTooltipValue = (value: number, name: string) => {
@@ -87,12 +90,12 @@ export function SeasonalTrend({
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" tickFormatter={formatMonth} />
+          <XAxis dataKey={xAxisKey} tickFormatter={formatXLabel} />
           <YAxis yAxisId="left" />
           <YAxis yAxisId="right" orientation="right" />
           <Tooltip
             formatter={formatTooltipValue}
-            labelFormatter={formatMonth}
+            labelFormatter={formatXLabel}
             contentStyle={{ backgroundColor: 'white', border: '1px solid #e5e7eb' }}
           />
           {showLegend && (
